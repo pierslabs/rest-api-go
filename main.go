@@ -5,9 +5,13 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	dbPostgres "github.com/pierslabs/rest-api-go/config"
 )
 
 func main() {
+
+	dbPostgres.PostgresConnection()
+
 	// create router
 	router := mux.NewRouter()
 
