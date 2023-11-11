@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	dbPostgres "github.com/pierslabs/rest-api-go/config"
+	"github.com/pierslabs/rest-api-go/internal/dbPostgres"
 )
 
 func main() {
