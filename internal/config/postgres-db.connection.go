@@ -16,6 +16,7 @@ type PostgresConfig struct {
 }
 
 func LoadPostgresConfig() (*PostgresConfig, error) {
+
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error load .env")
@@ -30,7 +31,7 @@ func LoadPostgresConfig() (*PostgresConfig, error) {
 	}
 
 	if cfg.Host == "" || cfg.Port == "" || cfg.User == "" || cfg.Password == "" || cfg.DBName == "" {
-		log.Fatal("Alguna variable de entorno requerida no está definida en el archivo .env")
+		log.Fatal("Some required environment variable is not defined in the .env file ❌")
 	}
 
 	return cfg, nil
