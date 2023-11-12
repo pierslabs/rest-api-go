@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -12,17 +11,11 @@ import (
 )
 
 func main() {
-	db, err := dbPostgres.PostgresConnection()
-	if err != nil {
-		log.Fatal("Error connect to Postgres DB:", err)
-	}
 
-	if db == nil {
-		log.Fatal("Error: The database pointer is null.")
-	}
+	dbPostgres.PostgresConnection()
 
-	db.AutoMigrate(&models.User{})
-	db.AutoMigrate(&models.Link{})
+	dbPostgres.DB.AutoMigrate(&models.User{})
+	dbPostgres.DB.AutoMigrate(&models.Link{})
 
 	// create router
 	router := mux.NewRouter()
