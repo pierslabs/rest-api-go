@@ -93,8 +93,37 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
+	var user models.User
+
+	params := mux.Vars(r)
+
+	err := dbPostgres.DB.Where("id = ?", params["id"]).First(&user).Error
+
+	if err != nil {
+		// Manejar el error si ocurre
+		w.WriteHeader(http.StatusInternalServerError)
+		setHeaderContentTypeJson(w)
+		w.Write([]byte("Error finding user"))
+		return
+	}
+
+	var reqBody models.User
+
+	json.NewDecoder(r.Body).Decode(&reqBody)
+
+	dbPostgres.DB.Model(&user).Updates(reqBody)
+
+	hashPassword, err := HashPassword(reqBody.Password)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		setHeaderContentTypeJson(w)
+		w.Write([]byte("Error hash password"))
+	}
+	user.Password = hashPassword
 
 	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(user)
 
 }
 
