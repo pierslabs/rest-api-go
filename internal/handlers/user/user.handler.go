@@ -56,7 +56,6 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Si el usuario fue encontrado, devolver los detalles del usuario en la respuesta JSON
 	w.WriteHeader(http.StatusOK)
 	setHeaderContentTypeJson(w)
 	json.NewEncoder(w).Encode(user)
@@ -94,15 +93,38 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
+
 	w.WriteHeader(http.StatusOK)
-	setHeaderContentTypeJson(w)
-	w.Write([]byte("update user"))
+
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
+
+	var user models.User
+	params := mux.Vars(r)
+	userID := params["id"]
+
+	if err := dbPostgres.DB.Where("id = ?", userID).First(&user).Error; err != nil {
+		// Manejar el error si ocurre
+		w.WriteHeader(http.StatusInternalServerError)
+		setHeaderContentTypeJson(w)
+		w.Write([]byte("Error finding user"))
+		return
+	}
+
+	err := dbPostgres.DB.Unscoped().Delete(&models.User{}, "id = ?", params["id"]).Error
+
+	if err != nil {
+		// Manejar el error si ocurre
+		w.WriteHeader(http.StatusInternalServerError)
+		setHeaderContentTypeJson(w)
+		w.Write([]byte("Error deleting user"))
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
 	setHeaderContentTypeJson(w)
-	w.Write([]byte("delete user"))
+	w.Write([]byte("User successfully deleted"))
 }
 
 func HashPassword(password string) (string, error) {

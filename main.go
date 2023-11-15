@@ -24,7 +24,7 @@ func main() {
 	handlers.RegisterRoutes(router)
 	// start server
 	http.Handle("/", router)
-	fmt.Println("Server running on port 3000")
-	http.ListenAndServe(":3000", router)
+	fmt.Println("Server running on port 3003")
+	http.ListenAndServe(":3003", router)
 
 }
